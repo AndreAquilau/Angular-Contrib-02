@@ -1,27 +1,153 @@
-# AngularCorrent
+## Rocketseat Contrib #2
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.4.
+#### Starting Project
+```bash
+ng new  contrib-02
+```
 
-## Development server
+#### Create Module and Router Video
+```bash
+ng module video --routing
+```
+> video/video.module.ts
+```ts
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+import { VideoRoutingModule } from './video-routing.module';
+import { VideoListComponent } from './video-list/video-list.component';
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+@NgModule({
+  declarations: [
+    VideoListComponent
+  ],
+  imports: [
+    CommonModule,
+    VideoRoutingModule
+  ]
+})
+export class VideoModule { }
+```
+> video-routing.module.ts
+```ts
+import { VideoListComponent } from './video-list/video-list.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-## Build
+const routes: Routes = [
+  {
+    path: '',
+    component: VideoListComponent
+  }
+];
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class VideoRoutingModule { }
+```
 
-## Running unit tests
+#### Create Component Video
+```bash
+ng generate component video/video-list
+```
+> video.component.ts
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```ts
+import { Component, OnInit } from '@angular/core';
 
-## Running end-to-end tests
+@Component({
+  selector: 'app-video-list',
+  templateUrl: './video-list.component.html',
+  styleUrls: ['./video-list.component.scss']
+})
+export class VideoListComponent implements OnInit {
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+  constructor() { }
 
-## Further help
+  ngOnInit(): void {
+  }
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+}
+```
+
+#### Create Service Video
+```bash
+ng generate service video/video
+```
+```ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class VideoService {
+
+  constructor() { }
+}
+```
+
+#### Import HttpClient In Service and HttpClientModule In Module
+```ts
+import { HttpClient } from '@angular/common/http';
+```
+```ts
+import { HttpClientModule } from '@angular/common/http';
+```
+
+#### Use Observable and Observable Operator
+```ts
+import { Observable } from 'rxjs';
+
+import { map, tap } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class VideoService {
+
+  constructor(
+    private http: HttpClient
+  ) { }
+  getRepos(): Observable<any> {
+    return this.http.get<any>('http://api.github.com/users/andreaquilau/agenda-online')
+    .pipe(map( repo => ({
+      name: repo.full_Name,
+      description: repo.description,
+    })), tap(console.log) );
+  }
+}
+
+
+// OR
+
+getRepos(): Observable<Repository[]> {
+  return this.http.get<any>('https://api.github.com/users/andreaquilau/repos');
+}
+```
+
+#### Use ngFor
+```html
+<ul>
+  <li *ngFor="let repo of repos | async">
+    <strong>{{repo.name}}</strong>
+    <strong>{{repo.description}}</strong>
+  </li>
+</ul>
+```
+
+#### Get Param Of Router
+```ts
+  {
+    path: 'ditail/:name',
+    component: VideoEditComponent,
+  }
+```
+```html
+  <a [routerLink]="['detail/', repo.name]">Detalhes</a>
+```
+```html
+  <a [routerLink]="['detail/', repo.name]">Detalhes</a>
+```

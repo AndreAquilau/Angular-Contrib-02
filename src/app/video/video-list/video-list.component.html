@@ -1,0 +1,7 @@
+<ul>
+  <li *ngFor="let repo of repos | async">
+    <strong >{{repo.name}}</strong>
+    <strong>{{repo.description}}</strong>
+    <a routerLink="detail/{{repo.name}}">Detalhes</a>
+  </li>
+</ul>
